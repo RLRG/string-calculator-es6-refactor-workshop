@@ -25,7 +25,7 @@ describe("The string calculator", () => {
     (() => sc("-1,2,-3")).should.throw(/-3/);
   });
 
-  it("Ignores numbers smaller than 1000", () => {
+  it("Ignores numbers greater than 1000", () => {
     sc("1000,1").should.eql(1);
   });
 
