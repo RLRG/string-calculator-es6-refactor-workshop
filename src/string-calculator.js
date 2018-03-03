@@ -32,24 +32,20 @@ const normalizeText = (separators, normalizedText) => {
   return normalizedText;
 };
 
+const extractNumbers = normalizedText => normalizedText !== ''
+    ? normalizedText.split(',').map(part => parseInt(part, 10))
+    : [];
+
 const checkNegatives = numbers => {
-  const negativeNumbers = [];
-  for (let part of numbers) {
-    const number = parseInt(part, 10);
-    if (number < 0)
-      negativeNumbers.push(number);
-  }
+  const negativeNumbers = numbers.filter(number => number < 0);
   if (negativeNumbers.length > 0)
     throw new Error(`Negative numbers are not allowed: ${negativeNumbers}`);
 };
 
+const discardInvalidNumbers = numbers => numbers.filter(number => number < 1000);
+
 const sumNumbers = numbers => {
-  let result = 0;
-  for (let part of numbers) {
-    const number = parseInt(part, 10);
-    if (number < 1000)
-      result += number;
-  }
+  const result = numbers.reduce((a, b) => a + b, 0);
   return result;
 };
 
@@ -60,9 +56,11 @@ module.exports = text => {
 
   const normalizedText = normalizeText(separators, rawText);
 
-  let numbers = normalizedText.split(',');
+  const numbers = extractNumbers(normalizedText);
 
   checkNegatives(numbers);
 
-  return sumNumbers(numbers);
+  const validNumbers = discardInvalidNumbers(numbers);
+
+  return sumNumbers(validNumbers);
 };
