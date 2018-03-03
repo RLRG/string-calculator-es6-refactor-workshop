@@ -9,8 +9,7 @@ const getSeparator = text => {
   return separators
 };
 
-module.exports = text => {
-  const separators = getSeparator(text)
+const getNormalizedText = (text, separators) => {
   let normalizedText = text;
   if (text.startsWith("//["))
     normalizedText = text.substr(text.indexOf("\n") + 1);
@@ -27,7 +26,12 @@ module.exports = text => {
     }
     normalizedText = normalizedText.replace(new RegExp(escapedSeparator, "g"), ',');
   }
+  return normalizedText;
+};
 
+module.exports = text => {
+  const separators = getSeparator(text)
+  const normalizedText = getNormalizedText(text, separators);
   const negativeNumbers = [];
   let result = 0;
   for (let part of normalizedText.split(',')) {
